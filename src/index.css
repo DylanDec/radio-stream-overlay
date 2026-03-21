@@ -60,7 +60,8 @@
   }
 
   .overlay-bg {
-    @apply absolute inset-0 bg-cover bg-center transition-all duration-[2000ms];
+    @apply absolute inset-0 bg-cover bg-center;
+    transition: all 2000ms ease;
   }
 
   .overlay-bg::after {
