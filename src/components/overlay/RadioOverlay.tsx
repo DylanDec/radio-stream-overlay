@@ -28,19 +28,9 @@ export function RadioOverlay() {
   }, [nowPlaying.artist, nowPlaying.title]);
 
   return (
-    <div className="overlay-container bg-background">
-      {/* Background image with overlay */}
-      <div
-        className="overlay-bg"
-        style={{ backgroundImage: `url(${showTheme.bgImage})` }}
-      />
-
-      {/* Animated canvas background */}
+    <div className="overlay-container">
+      {/* Full animated canvas background */}
       <AnimatedBackground themeId={showTheme.id} />
-
-      {/* Ambient glow orbs */}
-      <div className="absolute top-[15%] left-[10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] animate-pulse-glow" />
-      <div className="absolute bottom-[10%] right-[15%] w-[400px] h-[400px] rounded-full bg-secondary/10 blur-[100px] animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
 
       {/* Content layer */}
       <div className="relative z-10 flex flex-col h-full p-12">
