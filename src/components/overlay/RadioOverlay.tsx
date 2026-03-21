@@ -2,6 +2,7 @@ import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { Equalizer } from './Equalizer';
 import { ProgressBar } from './ProgressBar';
 import { JingleOverlay } from './JingleOverlay';
+import { AnimatedBackground } from './AnimatedBackground';
 import { Radio, SkipForward, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -34,6 +35,9 @@ export function RadioOverlay() {
         className="overlay-bg"
         style={{ backgroundImage: `url(${showTheme.bgImage})` }}
       />
+
+      {/* Animated canvas background */}
+      <AnimatedBackground themeId={showTheme.id} />
 
       {/* Ambient glow orbs */}
       <div className="absolute top-[15%] left-[10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] animate-pulse-glow" />
