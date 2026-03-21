@@ -12,6 +12,10 @@ export function RadioOverlay() {
   const [mode, setMode] = useState<'nowplaying' | 'slideshow'>('nowplaying');
 
   useEffect(() => {
+    if (!CONFIG.SLIDESHOW_ENABLED) {
+      setMode('nowplaying');
+      return;
+    }
     const duration = mode === 'nowplaying' ? CONFIG.NOW_PLAYING_DURATION : CONFIG.SLIDESHOW_DURATION;
     const timer = setTimeout(() => {
       setMode((prev) => (prev === 'nowplaying' ? 'slideshow' : 'nowplaying'));

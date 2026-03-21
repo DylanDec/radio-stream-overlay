@@ -1,6 +1,5 @@
 import { NowPlayingData, NextTrack } from '@/hooks/useNowPlaying';
 import { Radio, SkipForward } from 'lucide-react';
-import { Equalizer } from './Equalizer';
 import { useEffect, useState } from 'react';
 
 interface NowPlayingBarProps {
@@ -79,11 +78,6 @@ export function NowPlayingBar({ nowPlaying, nextTrack }: NowPlayingBarProps) {
               Live
             </span>
           </div>
-        </div>
-
-        {/* Equalizer */}
-        <div className="shrink-0 w-14 h-6 overflow-hidden opacity-80">
-          <Equalizer />
         </div>
 
         {/* Track info */}
