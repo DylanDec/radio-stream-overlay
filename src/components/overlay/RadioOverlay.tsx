@@ -1,7 +1,6 @@
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { Equalizer } from './Equalizer';
 import { ProgressBar } from './ProgressBar';
-import { JingleOverlay } from './JingleOverlay';
 import { AnimatedBackground } from './AnimatedBackground';
 import { Radio, SkipForward, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
