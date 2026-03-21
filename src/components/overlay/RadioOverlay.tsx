@@ -1,7 +1,6 @@
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { Equalizer } from './Equalizer';
 import { ProgressBar } from './ProgressBar';
-import { JingleOverlay } from './JingleOverlay';
 import { AnimatedBackground } from './AnimatedBackground';
 import { Radio, SkipForward, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -20,7 +19,7 @@ function LiveClock() {
 }
 
 export function RadioOverlay() {
-  const { nowPlaying, nextTrack, showTheme, isJingleActive, triggerJingle } = useNowPlaying();
+  const { nowPlaying, nextTrack, showTheme } = useNowPlaying();
   const [trackKey, setTrackKey] = useState('');
 
   // Re-trigger entrance animation on track change
@@ -29,19 +28,9 @@ export function RadioOverlay() {
   }, [nowPlaying.artist, nowPlaying.title]);
 
   return (
-    <div className="overlay-container bg-background">
-      {/* Background image with overlay */}
-      <div
-        className="overlay-bg"
-        style={{ backgroundImage: `url(${showTheme.bgImage})` }}
-      />
-
-      {/* Animated canvas background */}
+    <div className="overlay-container">
+      {/* Full animated canvas background */}
       <AnimatedBackground themeId={showTheme.id} />
-
-      {/* Ambient glow orbs */}
-      <div className="absolute top-[15%] left-[10%] w-[500px] h-[500px] rounded-full bg-primary/10 blur-[120px] animate-pulse-glow" />
-      <div className="absolute bottom-[10%] right-[15%] w-[400px] h-[400px] rounded-full bg-secondary/10 blur-[100px] animate-pulse-glow" style={{ animationDelay: '1.5s' }} />
 
       {/* Content layer */}
       <div className="relative z-10 flex flex-col h-full p-12">
@@ -129,7 +118,7 @@ export function RadioOverlay() {
         </div>
 
         {/* Bottom station branding */}
-        <div className="mt-12 flex items-center justify-between animate-float-up" style={{ animationDelay: '0.6s' }}>
+        <div className="mt-12 flex items-center animate-float-up" style={{ animationDelay: '0.6s' }}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center">
               <Radio className="w-5 h-5 text-primary" />
@@ -139,19 +128,8 @@ export function RadioOverlay() {
               <div className="text-xs text-muted-foreground">24/7 Non-stop muziek</div>
             </div>
           </div>
-
-          {/* Jingle trigger (click for demo) */}
-          <button
-            onClick={triggerJingle}
-            className="px-3 py-1.5 rounded-md bg-accent/20 border border-accent/30 text-xs font-mono text-accent hover:bg-accent/30 transition-colors active:scale-95"
-          >
-            ▶ Jingle
-          </button>
         </div>
       </div>
-
-      {/* Jingle overlay */}
-      <JingleOverlay active={isJingleActive} />
     </div>
   );
 }
