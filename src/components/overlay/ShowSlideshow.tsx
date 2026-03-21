@@ -62,7 +62,7 @@ const SHOWS: RadioShow[] = [
   },
 ];
 
-const SLIDE_DURATION = 10_000;
+const SLIDE_DURATION = CONFIG.SLIDE_DURATION;
 
 interface ShowSlideshowProps {
   visible: boolean;
