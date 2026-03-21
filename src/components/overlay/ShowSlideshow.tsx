@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Clock, Calendar, Mic } from 'lucide-react';
+import { CONFIG } from '@/config';
 
 export interface RadioShow {
   name: string;
@@ -61,7 +62,7 @@ const SHOWS: RadioShow[] = [
   },
 ];
 
-const SLIDE_DURATION = 10_000;
+const SLIDE_DURATION = CONFIG.SLIDE_DURATION;
 
 interface ShowSlideshowProps {
   visible: boolean;
