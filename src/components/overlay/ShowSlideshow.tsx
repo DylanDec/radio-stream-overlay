@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Clock, Calendar, Mic } from 'lucide-react';
+import { CONFIG } from '@/config';
 
 export interface RadioShow {
   name: string;

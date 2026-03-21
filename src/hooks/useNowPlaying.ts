@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { CONFIG } from '@/config';
 
 export interface NowPlayingData {
   title: string;
@@ -9,11 +10,14 @@ export interface NowPlayingData {
   duration?: number;
   isLive?: boolean;
   streamerName?: string;
+  listeners?: number;
+  playlist?: string;
 }
 
 export interface NextTrack {
   title: string;
   artist: string;
+  artUrl?: string;
 }
 
 export interface ShowTheme {
@@ -35,54 +39,47 @@ function getShowByHour(hour: number): ShowTheme {
   return SHOW_THEMES.night;
 }
 
-// ============================================================
-// CONFIGURATION — Change this to your AzuraCast API endpoint
-// ============================================================
-const AZURACAST_API_URL = '/api/nowplaying';
-const POLL_INTERVAL = 10_000;
-
 export function useNowPlaying() {
   const [nowPlaying, setNowPlaying] = useState<NowPlayingData>({
-    title: 'Midnight Drive',
-    artist: 'Luna Waves',
-    album: 'Neon Dreams',
-    duration: 247,
-    elapsed: 83,
+    title: 'Wachten op data…',
+    artist: '',
+    duration: 0,
+    elapsed: 0,
   });
   const [nextTrack, setNextTrack] = useState<NextTrack>({
-    title: 'Electric Sunset',
-    artist: 'The Dusk Collective',
+    title: '',
+    artist: '',
   });
   const [showTheme, setShowTheme] = useState<ShowTheme>(getShowByHour(new Date().getHours()));
-  const prevTitleRef = useRef('');
-  const apiConnected = useRef(false);
+  const lastSongId = useRef('');
 
   const fetchNowPlaying = useCallback(async () => {
     try {
-      const res = await fetch(AZURACAST_API_URL);
+      const res = await fetch(CONFIG.AZURACAST_API_URL);
       if (!res.ok) return;
       const contentType = res.headers.get('content-type') || '';
       if (!contentType.includes('application/json')) return;
 
       const data = await res.json();
-      const song = data?.now_playing?.song;
+      const np = data?.now_playing;
+      const song = np?.song;
       const next = data?.playing_next?.song;
       const live = data?.live;
 
       if (song) {
-        apiConnected.current = true;
-        const newTitle = `${song.artist} - ${song.title}`;
-        prevTitleRef.current = newTitle;
+        lastSongId.current = song.id;
 
         setNowPlaying({
           title: song.title || 'Unknown',
           artist: song.artist || 'Unknown',
           album: song.album || undefined,
           artUrl: song.art || undefined,
-          elapsed: data.now_playing.elapsed || 0,
-          duration: data.now_playing.duration || 0,
+          elapsed: np.elapsed || 0,
+          duration: np.duration || 0,
           isLive: live?.is_live || false,
           streamerName: live?.streamer_name || undefined,
+          listeners: data?.listeners?.current,
+          playlist: np.playlist || undefined,
         });
       }
 
@@ -90,28 +87,27 @@ export function useNowPlaying() {
         setNextTrack({
           title: next.title || 'Unknown',
           artist: next.artist || 'Unknown',
+          artUrl: next.art || undefined,
         });
       }
     } catch {
-      // API unavailable — keep demo data
+      // API unavailable — keep current data
     }
   }, []);
 
   // Poll API
   useEffect(() => {
     fetchNowPlaying();
-    const interval = setInterval(fetchNowPlaying, POLL_INTERVAL);
+    const interval = setInterval(fetchNowPlaying, CONFIG.POLL_INTERVAL);
     return () => clearInterval(interval);
   }, [fetchNowPlaying]);
 
-  // Tick elapsed time every second (works for both demo and live)
+  // Tick elapsed time every second
   useEffect(() => {
     const interval = setInterval(() => {
       setNowPlaying((prev) => {
         const newElapsed = (prev.elapsed || 0) + 1;
-        if (prev.duration && newElapsed >= prev.duration) {
-          return prev; // Don't exceed duration, wait for API update
-        }
+        if (prev.duration && newElapsed >= prev.duration) return prev;
         return { ...prev, elapsed: newElapsed };
       });
     }, 1000);
