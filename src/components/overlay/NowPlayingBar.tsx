@@ -80,11 +80,6 @@ export function NowPlayingBar({ nowPlaying, nextTrack }: NowPlayingBarProps) {
           </div>
         </div>
 
-        {/* Equalizer */}
-        <div className="shrink-0 w-14 h-6 overflow-hidden opacity-80">
-          <Equalizer />
-        </div>
-
         {/* Track info */}
         <div className="flex items-baseline gap-4 min-w-0 flex-1">
           <span className="text-xl font-bold text-foreground truncate">

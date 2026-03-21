@@ -35,4 +35,9 @@ export const CONFIG = {
    * Hoe lang elke slide zichtbaar is (ms)
    */
   SLIDE_DURATION: 10_000,
+
+  /**
+   * Slideshow aan/uit — zet op false om alleen "Now Playing" te tonen
+   */
+  SLIDESHOW_ENABLED: true,
 };
