@@ -19,7 +19,7 @@ function LiveClock() {
 }
 
 export function RadioOverlay() {
-  const { nowPlaying, nextTrack, showTheme, isJingleActive, triggerJingle } = useNowPlaying();
+  const { nowPlaying, nextTrack, showTheme } = useNowPlaying();
   const [trackKey, setTrackKey] = useState('');
 
   // Re-trigger entrance animation on track change
