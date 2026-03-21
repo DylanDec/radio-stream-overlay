@@ -1,6 +1,5 @@
 import { NowPlayingData, NextTrack } from '@/hooks/useNowPlaying';
 import { Radio, SkipForward } from 'lucide-react';
-import { Equalizer } from './Equalizer';
 import { useEffect, useState } from 'react';
 
 interface NowPlayingBarProps {
