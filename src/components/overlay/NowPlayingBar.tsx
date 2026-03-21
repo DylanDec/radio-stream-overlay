@@ -62,8 +62,8 @@ export function NowPlayingBar({ nowPlaying, nextTrack }: NowPlayingBarProps) {
         </div>
 
         {/* Equalizer */}
-        <div className="shrink-0 w-16">
-          <Equalizer barCount={6} height={20} />
+        <div className="shrink-0 w-12 h-5 overflow-hidden">
+          <Equalizer />
         </div>
 
         {/* Track info */}
