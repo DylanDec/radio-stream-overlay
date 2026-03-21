@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 export interface NowPlayingData {
   title: string;
@@ -19,14 +19,13 @@ export interface NextTrack {
 export interface ShowTheme {
   id: 'morning' | 'afternoon' | 'evening' | 'night';
   label: string;
-  bgImage: string;
 }
 
 const SHOW_THEMES: Record<ShowTheme['id'], ShowTheme> = {
-  morning: { id: 'morning', label: 'Ochtendshow', bgImage: '/images/overlay-bg-morning.jpg' },
-  afternoon: { id: 'afternoon', label: 'Middagmix', bgImage: '/images/overlay-bg-evening.jpg' },
-  evening: { id: 'evening', label: 'Avondshow', bgImage: '/images/overlay-bg-evening.jpg' },
-  night: { id: 'night', label: 'Nachtshift', bgImage: '/images/overlay-bg-night.jpg' },
+  morning: { id: 'morning', label: 'Ochtendshow' },
+  afternoon: { id: 'afternoon', label: 'Middagmix' },
+  evening: { id: 'evening', label: 'Avondshow' },
+  night: { id: 'night', label: 'Nachtshift' },
 };
 
 function getShowByHour(hour: number): ShowTheme {
@@ -40,7 +39,7 @@ function getShowByHour(hour: number): ShowTheme {
 // CONFIGURATION — Change this to your AzuraCast API endpoint
 // ============================================================
 const AZURACAST_API_URL = '/api/nowplaying';
-const POLL_INTERVAL = 10_000; // 10 seconds
+const POLL_INTERVAL = 10_000;
 
 export function useNowPlaying() {
   const [nowPlaying, setNowPlaying] = useState<NowPlayingData>({
@@ -55,27 +54,25 @@ export function useNowPlaying() {
     artist: 'The Dusk Collective',
   });
   const [showTheme, setShowTheme] = useState<ShowTheme>(getShowByHour(new Date().getHours()));
-  const [isJingleActive, setIsJingleActive] = useState(false);
-  const [prevTitle, setPrevTitle] = useState('');
+  const prevTitleRef = useRef('');
+  const apiConnected = useRef(false);
 
   const fetchNowPlaying = useCallback(async () => {
     try {
       const res = await fetch(AZURACAST_API_URL);
       if (!res.ok) return;
-      const data = await res.json();
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) return;
 
-      // AzuraCast response structure
+      const data = await res.json();
       const song = data?.now_playing?.song;
       const next = data?.playing_next?.song;
       const live = data?.live;
 
       if (song) {
+        apiConnected.current = true;
         const newTitle = `${song.artist} - ${song.title}`;
-        if (prevTitle && prevTitle !== newTitle) {
-          // Track changed — trigger jingle if desired
-          // setIsJingleActive(true);
-        }
-        setPrevTitle(newTitle);
+        prevTitleRef.current = newTitle;
 
         setNowPlaying({
           title: song.title || 'Unknown',
@@ -98,7 +95,7 @@ export function useNowPlaying() {
     } catch {
       // API unavailable — keep demo data
     }
-  }, [prevTitle]);
+  }, []);
 
   // Poll API
   useEffect(() => {
@@ -106,6 +103,20 @@ export function useNowPlaying() {
     const interval = setInterval(fetchNowPlaying, POLL_INTERVAL);
     return () => clearInterval(interval);
   }, [fetchNowPlaying]);
+
+  // Tick elapsed time every second (works for both demo and live)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNowPlaying((prev) => {
+        const newElapsed = (prev.elapsed || 0) + 1;
+        if (prev.duration && newElapsed >= prev.duration) {
+          return prev; // Don't exceed duration, wait for API update
+        }
+        return { ...prev, elapsed: newElapsed };
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Update show theme every minute
   useEffect(() => {
@@ -115,10 +126,5 @@ export function useNowPlaying() {
     return () => clearInterval(interval);
   }, []);
 
-  const triggerJingle = useCallback(() => {
-    setIsJingleActive(true);
-    setTimeout(() => setIsJingleActive(false), 3000);
-  }, []);
-
-  return { nowPlaying, nextTrack, showTheme, isJingleActive, triggerJingle };
+  return { nowPlaying, nextTrack, showTheme };
 }
