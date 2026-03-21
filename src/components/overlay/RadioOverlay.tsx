@@ -4,6 +4,7 @@ import { AnimatedBackground } from './AnimatedBackground';
 import { ShowSlideshow } from './ShowSlideshow';
 import { NowPlayingFull } from './NowPlayingFull';
 import { NowPlayingBar } from './NowPlayingBar';
+import { AudioPlayer } from './AudioPlayer';
 import { CONFIG } from '@/config';
 
 export function RadioOverlay() {
@@ -28,6 +29,7 @@ export function RadioOverlay() {
       />
       <ShowSlideshow visible={mode === 'slideshow'} />
       <NowPlayingBar nowPlaying={nowPlaying} nextTrack={nextTrack} />
+      <AudioPlayer />
     </div>
   );
 }
