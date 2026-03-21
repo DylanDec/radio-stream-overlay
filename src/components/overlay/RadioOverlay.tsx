@@ -4,6 +4,7 @@ import { AnimatedBackground } from './AnimatedBackground';
 import { ShowSlideshow } from './ShowSlideshow';
 import { NowPlayingFull } from './NowPlayingFull';
 import { NowPlayingBar } from './NowPlayingBar';
+import { AudioPlayer } from './AudioPlayer';
 import { CONFIG } from '@/config';
 
 export function RadioOverlay() {
