@@ -29,6 +29,7 @@ export function RadioOverlay() {
       />
       <ShowSlideshow visible={mode === 'slideshow'} />
       <NowPlayingBar nowPlaying={nowPlaying} nextTrack={nextTrack} />
+      <AudioPlayer />
     </div>
   );
 }
