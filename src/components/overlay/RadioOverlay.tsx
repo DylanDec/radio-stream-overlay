@@ -118,7 +118,7 @@ export function RadioOverlay() {
         </div>
 
         {/* Bottom station branding */}
-        <div className="mt-12 flex items-center justify-between animate-float-up" style={{ animationDelay: '0.6s' }}>
+        <div className="mt-12 flex items-center animate-float-up" style={{ animationDelay: '0.6s' }}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-primary/20 border border-primary/30 flex items-center justify-center">
               <Radio className="w-5 h-5 text-primary" />
@@ -128,19 +128,8 @@ export function RadioOverlay() {
               <div className="text-xs text-muted-foreground">24/7 Non-stop muziek</div>
             </div>
           </div>
-
-          {/* Jingle trigger (click for demo) */}
-          <button
-            onClick={triggerJingle}
-            className="px-3 py-1.5 rounded-md bg-accent/20 border border-accent/30 text-xs font-mono text-accent hover:bg-accent/30 transition-colors active:scale-95"
-          >
-            ▶ Jingle
-          </button>
         </div>
       </div>
-
-      {/* Jingle overlay */}
-      <JingleOverlay active={isJingleActive} />
     </div>
   );
 }
