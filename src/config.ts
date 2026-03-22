@@ -46,4 +46,10 @@ export const CONFIG = {
    * Slideshow aan/uit — zet op false om alleen "Now Playing" te tonen
    */
   SLIDESHOW_ENABLED: true,
+
+  /**
+   * Show-pagina aan/uit — zet op false om de show-pagina te negeren,
+   * ook als er een show gepland staat in AzuraCast
+   */
+  SHOW_PAGE_ENABLED: true,
 };
