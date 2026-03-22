@@ -40,6 +40,9 @@ function getShowByHour(hour: number): ShowTheme {
 }
 
 export function useNowPlaying() {
+  // Store the API-reported elapsed and the local timestamp when we received it
+  const elapsedBase = useRef({ apiElapsed: 0, receivedAt: 0, duration: 0 });
+
   const [nowPlaying, setNowPlaying] = useState<NowPlayingData>({
     title: 'Wachten op data…',
     artist: '',
@@ -67,6 +70,16 @@ export function useNowPlaying() {
       const live = data?.live;
 
       if (song) {
+        const apiElapsed = np.elapsed || 0;
+        const apiDuration = np.duration || 0;
+
+        // Update base reference for smooth local ticking
+        elapsedBase.current = {
+          apiElapsed,
+          receivedAt: performance.now(),
+          duration: apiDuration,
+        };
+
         lastSongId.current = song.id;
 
         setNowPlaying({
@@ -74,8 +87,8 @@ export function useNowPlaying() {
           artist: song.artist || 'Unknown',
           album: song.album || undefined,
           artUrl: song.art || undefined,
-          elapsed: np.elapsed || 0,
-          duration: np.duration || 0,
+          elapsed: apiElapsed,
+          duration: apiDuration,
           isLive: live?.is_live || false,
           streamerName: live?.streamer_name || undefined,
           listeners: data?.listeners?.current,
@@ -102,15 +115,18 @@ export function useNowPlaying() {
     return () => clearInterval(interval);
   }, [fetchNowPlaying]);
 
-  // Tick elapsed time every second
+  // Smooth local elapsed tick based on the API baseline + real time delta
   useEffect(() => {
     const interval = setInterval(() => {
+      const base = elapsedBase.current;
+      if (!base.receivedAt) return;
+      const delta = (performance.now() - base.receivedAt) / 1000;
+      const computed = Math.min(base.apiElapsed + delta, base.duration || Infinity);
       setNowPlaying((prev) => {
-        const newElapsed = (prev.elapsed || 0) + 1;
-        if (prev.duration && newElapsed >= prev.duration) return prev;
-        return { ...prev, elapsed: newElapsed };
+        if (Math.abs((prev.elapsed || 0) - computed) < 0.3) return prev;
+        return { ...prev, elapsed: computed };
       });
-    }, 1000);
+    }, 250);
     return () => clearInterval(interval);
   }, []);
 
