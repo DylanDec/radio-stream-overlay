@@ -11,6 +11,12 @@ export const CONFIG = {
   AZURACAST_API_URL: 'http://192.168.50.25/api/nowplaying/test',
 
   /**
+   * AzuraCast Schedule API URL
+   * Voorbeeld: http://192.168.50.25/api/station/test/schedule
+   */
+  AZURACAST_SCHEDULE_URL: 'http://192.168.50.25/api/station/test/schedule',
+
+  /**
    * AzuraCast Stream URL (voor de audiospeler)
    * Voorbeeld: http://192.168.50.25/listen/test/radio.mp3
    */
