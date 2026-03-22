@@ -37,45 +37,50 @@ export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    canvas.width = 1920;
-    canvas.height = 1080;
+    function resize() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const w = () => canvas.width;
+    const h = () => canvas.height;
 
     const palette = THEME_PALETTES[themeId] || THEME_PALETTES.night;
 
-    // Particles
+    // Particles — positions as fractions
     const particles = Array.from({ length: 80 }, () => ({
-      x: Math.random() * 1920,
-      y: Math.random() * 1080,
+      xFrac: Math.random(),
+      yFrac: Math.random(),
       vx: (Math.random() - 0.5) * 0.5,
       vy: (Math.random() - 0.5) * 0.35,
-      radius: 60 + Math.random() * 250,
+      radiusFrac: (60 + Math.random() * 250) / 1920,
       color: palette.colors[Math.floor(Math.random() * palette.colors.length)],
       alpha: 0.1 + Math.random() * 0.4,
       alphaDir: (Math.random() - 0.5) * 0.004,
     }));
 
-    // Large glow sources (slow-moving spotlights)
     const glows = Array.from({ length: 4 }, (_, i) => ({
-      x: 300 + Math.random() * 1320,
-      y: 200 + Math.random() * 680,
+      xFrac: 0.15 + Math.random() * 0.7,
+      yFrac: 0.18 + Math.random() * 0.64,
       vx: (Math.random() - 0.5) * 0.15,
       vy: (Math.random() - 0.5) * 0.12,
-      radius: 350 + Math.random() * 250,
+      radiusFrac: (350 + Math.random() * 250) / 1920,
       color: palette.glowColors[i % palette.glowColors.length],
     }));
 
-    // Waves
     const waves = [
-      { amplitude: 45, frequency: 0.003, speed: 0.008, y: 680, color: palette.colors[0] },
-      { amplitude: 35, frequency: 0.0045, speed: -0.006, y: 740, color: palette.colors[1] },
-      { amplitude: 55, frequency: 0.002, speed: 0.005, y: 820, color: palette.colors[2] || palette.colors[0] },
-      { amplitude: 25, frequency: 0.006, speed: 0.01, y: 900, color: palette.colors[0] },
+      { amplitude: 45, frequency: 0.003, speed: 0.008, yFrac: 680 / 1080, color: palette.colors[0] },
+      { amplitude: 35, frequency: 0.0045, speed: -0.006, yFrac: 740 / 1080, color: palette.colors[1] },
+      { amplitude: 55, frequency: 0.002, speed: 0.005, yFrac: 820 / 1080, color: palette.colors[2] || palette.colors[0] },
+      { amplitude: 25, frequency: 0.006, speed: 0.01, yFrac: 900 / 1080, color: palette.colors[0] },
     ];
 
-    // Stars (tiny sparkles)
     const stars = Array.from({ length: 120 }, () => ({
-      x: Math.random() * 1920,
-      y: Math.random() * 600,
+      xFrac: Math.random(),
+      yFrac: Math.random() * 0.55,
       size: 0.5 + Math.random() * 1.5,
       twinkleSpeed: 0.5 + Math.random() * 2,
       phase: Math.random() * Math.PI * 2,
@@ -86,67 +91,72 @@ export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
 
     function draw() {
       if (!ctx || !canvas) return;
+      const cw = w();
+      const ch = h();
 
-      // Fill solid dark background (replaces the static image)
       ctx.fillStyle = palette.bg;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillRect(0, 0, cw, ch);
 
-      // Draw large glow sources
       for (const g of glows) {
-        g.x += g.vx;
-        g.y += g.vy;
-        if (g.x < 100 || g.x > 1820) g.vx *= -1;
-        if (g.y < 100 || g.y > 980) g.vy *= -1;
+        const gx = g.xFrac * cw;
+        const gy = g.yFrac * ch;
+        const gr = g.radiusFrac * cw;
+        g.xFrac += g.vx / cw;
+        g.yFrac += g.vy / ch;
+        if (g.xFrac < 0.05 || g.xFrac > 0.95) g.vx *= -1;
+        if (g.yFrac < 0.05 || g.yFrac > 0.95) g.vy *= -1;
 
-        const grad = ctx.createRadialGradient(g.x, g.y, 0, g.x, g.y, g.radius);
+        const grad = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
         grad.addColorStop(0, g.color);
         grad.addColorStop(1, 'transparent');
         ctx.fillStyle = grad;
-        ctx.fillRect(g.x - g.radius, g.y - g.radius, g.radius * 2, g.radius * 2);
+        ctx.fillRect(gx - gr, gy - gr, gr * 2, gr * 2);
       }
 
-      // Draw bokeh particles
       for (const p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
+        const px = p.xFrac * cw;
+        const py = p.yFrac * ch;
+        const pr = p.radiusFrac * cw;
+        p.xFrac += p.vx / cw;
+        p.yFrac += p.vy / ch;
         p.alpha += p.alphaDir;
         if (p.alpha <= 0.05 || p.alpha >= 0.55) p.alphaDir *= -1;
-        if (p.x < -p.radius) p.x = canvas.width + p.radius;
-        if (p.x > canvas.width + p.radius) p.x = -p.radius;
-        if (p.y < -p.radius) p.y = canvas.height + p.radius;
-        if (p.y > canvas.height + p.radius) p.y = -p.radius;
+        if (p.xFrac < -0.1) p.xFrac = 1.1;
+        if (p.xFrac > 1.1) p.xFrac = -0.1;
+        if (p.yFrac < -0.1) p.yFrac = 1.1;
+        if (p.yFrac > 1.1) p.yFrac = -0.1;
 
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+        const gradient = ctx.createRadialGradient(px, py, 0, px, py, pr);
         gradient.addColorStop(0, p.color.replace(/[\d.]+\)$/, `${p.alpha})`));
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
-        ctx.fillRect(p.x - p.radius, p.y - p.radius, p.radius * 2, p.radius * 2);
+        ctx.fillRect(px - pr, py - pr, pr * 2, pr * 2);
       }
 
-      // Draw twinkling stars
       for (const s of stars) {
         const brightness = 0.3 + 0.7 * Math.abs(Math.sin(time * s.twinkleSpeed + s.phase));
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+        ctx.arc(s.xFrac * cw, s.yFrac * ch, s.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255, 255, 255, ${brightness * 0.6})`;
         ctx.fill();
       }
 
-      // Draw flowing waves
       for (const wave of waves) {
+        const baseY = wave.yFrac * ch;
+        const amp = wave.amplitude * (ch / 1080);
         ctx.beginPath();
-        ctx.moveTo(0, canvas.height);
-        for (let x = 0; x <= canvas.width; x += 4) {
+        ctx.moveTo(0, ch);
+        for (let x = 0; x <= cw; x += 4) {
           const y =
-            wave.y +
-            Math.sin(x * wave.frequency + time * wave.speed * 60) * wave.amplitude +
-            Math.sin(x * wave.frequency * 1.5 + time * wave.speed * 40) * (wave.amplitude * 0.4);
+            baseY +
+            Math.sin(x * wave.frequency + time * wave.speed * 60) * amp +
+            Math.sin(x * wave.frequency * 1.5 + time * wave.speed * 40) * (amp * 0.4);
           ctx.lineTo(x, y);
         }
-        ctx.lineTo(canvas.width, canvas.height);
+        ctx.lineTo(cw, ch);
         ctx.closePath();
 
-        const grad = ctx.createLinearGradient(0, wave.y - wave.amplitude, 0, canvas.height);
+        const grad = ctx.createLinearGradient(0, baseY - amp, 0, ch);
         grad.addColorStop(0, wave.color);
         grad.addColorStop(1, 'transparent');
         ctx.fillStyle = grad;
@@ -158,7 +168,10 @@ export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
     }
 
     draw();
-    return () => cancelAnimationFrame(animId);
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+    };
   }, [themeId]);
 
   return (

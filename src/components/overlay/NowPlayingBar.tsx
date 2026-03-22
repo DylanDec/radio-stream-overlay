@@ -21,7 +21,7 @@ function LiveClock() {
     return () => clearInterval(id);
   }, []);
   return (
-    <span className="font-mono tabular-nums text-sm text-foreground/60">
+    <span className="font-mono tabular-nums text-xs sm:text-sm text-foreground/60">
       {time.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
     </span>
   );
@@ -35,7 +35,7 @@ export function NowPlayingBar({ nowPlaying, nextTrack }: NowPlayingBarProps) {
   return (
     <div className="absolute bottom-0 left-0 right-0 z-30">
       {/* Glow progress line */}
-      <div className="relative h-[3px] w-full" style={{ background: 'hsla(var(--foreground), 0.05)' }}>
+      <div className="relative h-[2px] sm:h-[3px] w-full" style={{ background: 'hsla(var(--foreground), 0.05)' }}>
         <div
           className="absolute inset-y-0 left-0"
           style={{
@@ -48,26 +48,26 @@ export function NowPlayingBar({ nowPlaying, nextTrack }: NowPlayingBarProps) {
       </div>
 
       <div
-        className="flex items-center gap-8 px-12 py-5"
+        className="flex items-center gap-3 sm:gap-5 lg:gap-8 px-4 sm:px-8 lg:px-12 py-3 sm:py-4 lg:py-5"
         style={{
           background: `linear-gradient(to top, hsla(var(--background), 0.97), hsla(var(--background), 0.85))`,
           backdropFilter: 'blur(20px)',
         }}
       >
-        {/* Live badge + equalizer */}
-        <div className="flex items-center gap-4 shrink-0">
+        {/* Live badge */}
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center"
             style={{
               background: 'hsla(var(--primary), 0.12)',
               border: '1px solid hsla(var(--primary), 0.2)',
             }}
           >
-            <Radio className="w-5 h-5 text-primary" />
+            <Radio className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
           </div>
 
           <div
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full"
             style={{
               background: 'hsla(var(--primary), 0.08)',
               border: '1px solid hsla(var(--primary), 0.15)',
@@ -81,22 +81,22 @@ export function NowPlayingBar({ nowPlaying, nextTrack }: NowPlayingBarProps) {
         </div>
 
         {/* Track info */}
-        <div className="flex items-baseline gap-4 min-w-0 flex-1">
-          <span className="text-xl font-bold text-foreground truncate">
+        <div className="flex items-baseline gap-2 sm:gap-4 min-w-0 flex-1">
+          <span className="text-sm sm:text-lg lg:text-xl font-bold text-foreground truncate">
             {nowPlaying.title}
           </span>
-          <span className="text-lg text-primary/70 truncate">
+          <span className="text-sm sm:text-base lg:text-lg text-primary/70 truncate hidden xs:inline">
             {nowPlaying.artist}
           </span>
           {nowPlaying.album && (
-            <span className="text-sm text-muted-foreground/60 truncate">
+            <span className="text-xs sm:text-sm text-muted-foreground/60 truncate hidden lg:inline">
               {nowPlaying.album}
             </span>
           )}
         </div>
 
-        {/* Time elapsed */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Time elapsed — hidden on very small screens */}
+        <div className="hidden sm:flex items-center gap-2 shrink-0">
           <span className="text-xs font-mono tabular-nums text-muted-foreground">
             {formatTime(nowPlaying.elapsed)}
           </span>
@@ -107,21 +107,21 @@ export function NowPlayingBar({ nowPlaying, nextTrack }: NowPlayingBarProps) {
         </div>
 
         {/* Divider */}
-        <div className="w-px h-6 shrink-0" style={{ background: 'hsla(var(--border), 0.3)' }} />
+        <div className="hidden md:block w-px h-6 shrink-0" style={{ background: 'hsla(var(--border), 0.3)' }} />
 
-        {/* Next up */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Next up — hidden on small screens */}
+        <div className="hidden md:flex items-center gap-2 shrink-0">
           <SkipForward className="w-3.5 h-3.5 text-muted-foreground/50" />
           <span className="text-[10px] font-mono uppercase tracking-[0.15em] text-muted-foreground/50">
             Hierna
           </span>
-          <span className="text-xs text-foreground/50">
+          <span className="text-xs text-foreground/50 truncate max-w-[200px] lg:max-w-none">
             {nextTrack.artist} — {nextTrack.title}
           </span>
         </div>
 
         {/* Divider */}
-        <div className="w-px h-6 shrink-0" style={{ background: 'hsla(var(--border), 0.3)' }} />
+        <div className="hidden lg:block w-px h-6 shrink-0" style={{ background: 'hsla(var(--border), 0.3)' }} />
 
         {/* Clock */}
         <LiveClock />
