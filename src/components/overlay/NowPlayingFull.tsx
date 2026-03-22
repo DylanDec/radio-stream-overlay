@@ -1,6 +1,5 @@
 import { NowPlayingData, NextTrack } from '@/hooks/useNowPlaying';
-import { SkipForward, Music, Disc3 } from 'lucide-react';
-import { Equalizer } from './Equalizer';
+import { SkipForward, Disc3 } from 'lucide-react';
 
 interface NowPlayingFullProps {
   nowPlaying: NowPlayingData;
