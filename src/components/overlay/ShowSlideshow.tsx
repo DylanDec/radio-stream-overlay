@@ -82,14 +82,12 @@ export function ShowSlideshow({ visible }: ShowSlideshowProps) {
     }, 500);
   }, []);
 
-  // Auto-advance only when visible
   useEffect(() => {
     if (!visible) return;
     const interval = setInterval(goToNext, SLIDE_DURATION);
     return () => clearInterval(interval);
   }, [goToNext, visible]);
 
-  // Progress bar
   useEffect(() => {
     if (!visible) return;
     const startTime = Date.now();
@@ -113,7 +111,7 @@ export function ShowSlideshow({ visible }: ShowSlideshowProps) {
         visible ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
     >
-      {/* Decorative accent glow per show */}
+      {/* Decorative accent glow */}
       <div
         className={`absolute inset-0 transition-opacity duration-700 ${
           isTransitioning ? 'opacity-0' : 'opacity-100'
@@ -127,16 +125,16 @@ export function ShowSlideshow({ visible }: ShowSlideshowProps) {
       />
 
       {/* Content */}
-      <div className="relative z-10 flex w-full h-full">
-        {/* Left side — large show initial / visual */}
-        <div className="flex items-center justify-center w-[45%]">
+      <div className="relative z-10 flex flex-col sm:flex-row w-full h-full">
+        {/* Left side — show initial */}
+        <div className="flex items-center justify-center w-full sm:w-[45%] py-8 sm:py-0">
           <div
             className={`transition-all duration-600 ${
               isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
             }`}
           >
             <div
-              className="w-64 h-64 rounded-3xl flex items-center justify-center relative overflow-hidden"
+              className="w-32 h-32 sm:w-48 sm:h-48 lg:w-64 lg:h-64 rounded-2xl sm:rounded-3xl flex items-center justify-center relative overflow-hidden"
               style={{
                 background: `linear-gradient(135deg, hsla(${show.accentHue}, 60%, 45%, 0.2), hsla(${show.accentHue}, 80%, 35%, 0.08))`,
                 border: `1px solid hsla(${show.accentHue}, 60%, 50%, 0.2)`,
@@ -144,18 +142,17 @@ export function ShowSlideshow({ visible }: ShowSlideshowProps) {
               }}
             >
               <span
-                className="text-8xl font-bold select-none"
+                className="text-5xl sm:text-7xl lg:text-8xl font-bold select-none"
                 style={{ color: `hsla(${show.accentHue}, 60%, 60%, 0.3)` }}
               >
                 {show.name.charAt(0)}
               </span>
-              {/* Decorative rings */}
               <div
-                className="absolute inset-4 rounded-2xl border animate-pulse-glow"
+                className="absolute inset-4 rounded-xl sm:rounded-2xl border animate-pulse-glow"
                 style={{ borderColor: `hsla(${show.accentHue}, 50%, 50%, 0.1)` }}
               />
               <div
-                className="absolute inset-8 rounded-xl border"
+                className="absolute inset-8 rounded-lg sm:rounded-xl border"
                 style={{ borderColor: `hsla(${show.accentHue}, 50%, 50%, 0.06)` }}
               />
             </div>
@@ -163,76 +160,69 @@ export function ShowSlideshow({ visible }: ShowSlideshowProps) {
         </div>
 
         {/* Right side — show info */}
-        <div className="flex flex-col justify-center w-[55%] pr-[120px]">
+        <div className="flex flex-col justify-center w-full sm:w-[55%] px-6 sm:px-8 lg:pr-[120px] pb-24 sm:pb-0">
           <div
             key={currentIndex}
-            className={`space-y-6 transition-all duration-500 ${
-              isTransitioning
-                ? 'opacity-0 translate-y-6'
-                : 'opacity-100 translate-y-0'
+            className={`space-y-3 sm:space-y-4 lg:space-y-6 transition-all duration-500 ${
+              isTransitioning ? 'opacity-0 translate-y-6' : 'opacity-100 translate-y-0'
             }`}
           >
-            {/* Label */}
             <div className="animate-float-up" style={{ animationDelay: '0s' }}>
-              <span className="text-xs font-mono uppercase tracking-[0.3em] text-muted-foreground">
+              <span className="text-[10px] sm:text-xs font-mono uppercase tracking-[0.3em] text-muted-foreground">
                 Programmering
               </span>
             </div>
 
-            {/* Show name */}
             <div className="animate-float-up" style={{ animationDelay: '0.1s' }}>
               <h2
-                className="text-5xl font-bold tracking-tight text-foreground leading-[1.1]"
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-foreground leading-[1.1]"
                 style={{ textWrap: 'balance' }}
               >
                 {show.name}
               </h2>
             </div>
 
-            {/* Host */}
             <div className="animate-float-up" style={{ animationDelay: '0.15s' }}>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
+                  className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center"
                   style={{
                     background: `hsla(${show.accentHue}, 60%, 50%, 0.15)`,
                     border: `1px solid hsla(${show.accentHue}, 60%, 50%, 0.25)`,
                   }}
                 >
-                  <Mic className="w-4 h-4" style={{ color: `hsla(${show.accentHue}, 60%, 60%, 0.9)` }} />
+                  <Mic className="w-3.5 h-3.5 sm:w-4 sm:h-4" style={{ color: `hsla(${show.accentHue}, 60%, 60%, 0.9)` }} />
                 </div>
-                <span className="text-xl font-medium text-primary/90">{show.host}</span>
+                <span className="text-base sm:text-lg lg:text-xl font-medium text-primary/90">{show.host}</span>
               </div>
             </div>
 
-            {/* Description */}
             <div className="animate-float-up" style={{ animationDelay: '0.2s' }}>
-              <p className="text-lg text-muted-foreground leading-relaxed max-w-[520px]">
+              <p className="text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed max-w-[520px]">
                 {show.description}
               </p>
             </div>
 
-            {/* Time & days */}
-            <div className="animate-float-up flex items-center gap-4" style={{ animationDelay: '0.3s' }}>
+            <div className="animate-float-up flex flex-wrap items-center gap-2 sm:gap-4" style={{ animationDelay: '0.3s' }}>
               <div
-                className="flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm"
+                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl backdrop-blur-sm"
                 style={{
                   background: 'hsla(var(--muted), 0.3)',
                   border: '1px solid hsla(var(--border), 0.3)',
                 }}
               >
-                <Clock className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-foreground/80">{show.time}</span>
+                <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
+                <span className="text-xs sm:text-sm font-medium text-foreground/80">{show.time}</span>
               </div>
               <div
-                className="flex items-center gap-2 px-4 py-2 rounded-xl backdrop-blur-sm"
+                className="flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-lg sm:rounded-xl backdrop-blur-sm"
                 style={{
                   background: 'hsla(var(--muted), 0.3)',
                   border: '1px solid hsla(var(--border), 0.3)',
                 }}
               >
-                <Calendar className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm font-medium text-foreground/80">{show.days}</span>
+                <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" />
+                <span className="text-xs sm:text-sm font-medium text-foreground/80">{show.days}</span>
               </div>
             </div>
           </div>
@@ -240,9 +230,9 @@ export function ShowSlideshow({ visible }: ShowSlideshowProps) {
       </div>
 
       {/* Slide indicators */}
-      <div className="absolute bottom-28 right-[120px] z-20 flex items-center gap-2">
+      <div className="absolute bottom-20 sm:bottom-24 lg:bottom-28 right-6 sm:right-8 lg:right-[120px] z-20 flex items-center gap-1.5 sm:gap-2">
         {SHOWS.map((_, i) => (
-          <div key={i} className="relative w-8 h-1 rounded-full overflow-hidden bg-foreground/10">
+          <div key={i} className="relative w-5 sm:w-6 lg:w-8 h-1 rounded-full overflow-hidden bg-foreground/10">
             {i === currentIndex ? (
               <div
                 className="absolute inset-y-0 left-0 bg-primary rounded-full"

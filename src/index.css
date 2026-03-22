@@ -56,7 +56,7 @@
 
 @layer components {
   .overlay-container {
-    @apply relative w-[1920px] h-[1080px] overflow-hidden;
+    @apply relative w-screen h-screen overflow-hidden;
   }
 
   .overlay-bg {
