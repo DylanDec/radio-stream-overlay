@@ -16,7 +16,7 @@ export function RadioOverlay() {
 
   // When a show is active, switch to show mode
   useEffect(() => {
-    if (currentShow) {
+    if (CONFIG.SHOW_PAGE_ENABLED && currentShow) {
       setMode('show');
     } else if (mode === 'show') {
       setMode('nowplaying');
