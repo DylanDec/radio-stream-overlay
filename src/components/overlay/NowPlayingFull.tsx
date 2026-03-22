@@ -92,12 +92,8 @@ export function NowPlayingFull({ nowPlaying, nextTrack, visible }: NowPlayingFul
             )}
 
             {/* Progress section */}
-            <div className="flex items-center gap-5 mt-6">
-              <div className="w-16 h-7 overflow-hidden opacity-70">
-                <Equalizer />
-              </div>
-
-              <div className="flex-1 max-w-[360px]">
+            <div className="flex items-center gap-4 mt-6">
+              <div className="flex-1 max-w-[400px]">
                 <div
                   className="h-1.5 rounded-full overflow-hidden"
                   style={{ background: 'hsla(var(--foreground), 0.08)' }}
