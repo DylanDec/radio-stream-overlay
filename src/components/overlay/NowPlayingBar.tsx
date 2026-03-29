@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 interface NowPlayingBarProps {
   nowPlaying: NowPlayingData;
   nextTrack: NextTrack;
+  calm?: boolean;
 }
 
 function formatTime(seconds?: number) {
