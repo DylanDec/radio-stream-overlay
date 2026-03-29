@@ -41,9 +41,13 @@ export function NowPlayingBar({ nowPlaying, nextTrack, calm = false }: NowPlayin
           className="absolute inset-y-0 left-0"
           style={{
             width: `${progressPct}%`,
-            background: 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)))',
+            background: calm
+              ? 'linear-gradient(90deg, hsla(220, 20%, 40%, 0.6), hsla(240, 15%, 35%, 0.5))'
+              : 'linear-gradient(90deg, hsl(var(--primary)), hsl(var(--secondary)))',
             transition: 'width 1s linear',
-            boxShadow: '0 0 12px hsla(var(--primary), 0.4), 0 0 4px hsla(var(--primary), 0.6)',
+            boxShadow: calm
+              ? '0 0 6px hsla(220, 20%, 40%, 0.15)'
+              : '0 0 12px hsla(var(--primary), 0.4), 0 0 4px hsla(var(--primary), 0.6)',
           }}
         />
       </div>
