@@ -153,7 +153,7 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
 
       for (const wave of waves) {
         const baseY = wave.yFrac * ch;
-        const amp = wave.amplitude * (ch / 1080);
+        const amp = wave.amplitude * (ch / 1080) * waveAmplitudeMult;
         ctx.beginPath();
         ctx.moveTo(0, ch);
         for (let x = 0; x <= cw; x += 4) {
