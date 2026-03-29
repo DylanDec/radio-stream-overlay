@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 interface AnimatedBackgroundProps {
   themeId: 'morning' | 'afternoon' | 'evening' | 'night';
+  calm?: boolean;
 }
 
 const THEME_PALETTES: Record<string, { bg: string; colors: string[]; glowColors: string[] }> = {
