@@ -54,10 +54,14 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
     const w = () => canvas.width;
     const h = () => canvas.height;
 
-    const palette = THEME_PALETTES[themeId] || THEME_PALETTES.night;
+    const palette = calm ? THEME_PALETTES.calm : (THEME_PALETTES[themeId] || THEME_PALETTES.night);
+    const particleCount = calm ? 20 : 80;
+    const glowCount = calm ? 2 : 4;
+    const starCount = calm ? 40 : 120;
+    const waveAmplitudeMult = calm ? 0.3 : 1;
 
     // Particles — positions as fractions
-    const particles = Array.from({ length: 80 }, () => ({
+    const particles = Array.from({ length: particleCount }, () => ({
       xFrac: Math.random(),
       yFrac: Math.random(),
       vx: (Math.random() - 0.5) * 0.5,
