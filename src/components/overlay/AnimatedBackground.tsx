@@ -72,7 +72,7 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
       alphaDir: (Math.random() - 0.5) * 0.004,
     }));
 
-    const glows = Array.from({ length: 4 }, (_, i) => ({
+    const glows = Array.from({ length: glowCount }, (_, i) => ({
       xFrac: 0.15 + Math.random() * 0.7,
       yFrac: 0.18 + Math.random() * 0.64,
       vx: (Math.random() - 0.5) * 0.15,
