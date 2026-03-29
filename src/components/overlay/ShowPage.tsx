@@ -8,6 +8,7 @@ interface ShowPageProps {
   nowPlaying: NowPlayingData;
   nextTrack: NextTrack;
   upcoming: ScheduleEntry[];
+  calm?: boolean;
 }
 
 function formatTime(seconds?: number) {
