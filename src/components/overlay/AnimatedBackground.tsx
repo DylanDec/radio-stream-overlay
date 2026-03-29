@@ -26,6 +26,11 @@ const THEME_PALETTES: Record<string, { bg: string; colors: string[]; glowColors:
     colors: ['hsla(170, 80%, 50%, 0.2)', 'hsla(280, 70%, 50%, 0.15)', 'hsla(330, 80%, 55%, 0.12)'],
     glowColors: ['hsla(170, 90%, 50%, 0.3)', 'hsla(330, 85%, 55%, 0.2)'],
   },
+  calm: {
+    bg: '#050508',
+    colors: ['hsla(220, 30%, 25%, 0.08)', 'hsla(240, 20%, 20%, 0.06)', 'hsla(200, 25%, 22%, 0.05)'],
+    glowColors: ['hsla(220, 25%, 30%, 0.1)', 'hsla(240, 20%, 25%, 0.08)'],
+  },
 };
 
 export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
