@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 interface AnimatedBackgroundProps {
   themeId: 'morning' | 'afternoon' | 'evening' | 'night';
+  calm?: boolean;
 }
 
 const THEME_PALETTES: Record<string, { bg: string; colors: string[]; glowColors: string[] }> = {
@@ -25,9 +26,14 @@ const THEME_PALETTES: Record<string, { bg: string; colors: string[]; glowColors:
     colors: ['hsla(170, 80%, 50%, 0.2)', 'hsla(280, 70%, 50%, 0.15)', 'hsla(330, 80%, 55%, 0.12)'],
     glowColors: ['hsla(170, 90%, 50%, 0.3)', 'hsla(330, 85%, 55%, 0.2)'],
   },
+  calm: {
+    bg: '#050508',
+    colors: ['hsla(220, 30%, 25%, 0.08)', 'hsla(240, 20%, 20%, 0.06)', 'hsla(200, 25%, 22%, 0.05)'],
+    glowColors: ['hsla(220, 25%, 30%, 0.1)', 'hsla(240, 20%, 25%, 0.08)'],
+  },
 };
 
-export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
+export function AnimatedBackground({ themeId, calm = false }: AnimatedBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -48,10 +54,14 @@ export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
     const w = () => canvas.width;
     const h = () => canvas.height;
 
-    const palette = THEME_PALETTES[themeId] || THEME_PALETTES.night;
+    const palette = calm ? THEME_PALETTES.calm : (THEME_PALETTES[themeId] || THEME_PALETTES.night);
+    const particleCount = calm ? 20 : 80;
+    const glowCount = calm ? 2 : 4;
+    const starCount = calm ? 40 : 120;
+    const waveAmplitudeMult = calm ? 0.3 : 1;
 
     // Particles — positions as fractions
-    const particles = Array.from({ length: 80 }, () => ({
+    const particles = Array.from({ length: particleCount }, () => ({
       xFrac: Math.random(),
       yFrac: Math.random(),
       vx: (Math.random() - 0.5) * 0.5,
@@ -62,7 +72,7 @@ export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
       alphaDir: (Math.random() - 0.5) * 0.004,
     }));
 
-    const glows = Array.from({ length: 4 }, (_, i) => ({
+    const glows = Array.from({ length: glowCount }, (_, i) => ({
       xFrac: 0.15 + Math.random() * 0.7,
       yFrac: 0.18 + Math.random() * 0.64,
       vx: (Math.random() - 0.5) * 0.15,
@@ -78,7 +88,7 @@ export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
       { amplitude: 25, frequency: 0.006, speed: 0.01, yFrac: 900 / 1080, color: palette.colors[0] },
     ];
 
-    const stars = Array.from({ length: 120 }, () => ({
+    const stars = Array.from({ length: starCount }, () => ({
       xFrac: Math.random(),
       yFrac: Math.random() * 0.55,
       size: 0.5 + Math.random() * 1.5,
@@ -143,7 +153,7 @@ export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
 
       for (const wave of waves) {
         const baseY = wave.yFrac * ch;
-        const amp = wave.amplitude * (ch / 1080);
+        const amp = wave.amplitude * (ch / 1080) * waveAmplitudeMult;
         ctx.beginPath();
         ctx.moveTo(0, ch);
         for (let x = 0; x <= cw; x += 4) {
@@ -172,7 +182,7 @@ export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
     };
-  }, [themeId]);
+  }, [themeId, calm]);
 
   return (
     <canvas

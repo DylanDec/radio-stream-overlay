@@ -8,6 +8,7 @@ interface ShowPageProps {
   nowPlaying: NowPlayingData;
   nextTrack: NextTrack;
   upcoming: ScheduleEntry[];
+  calm?: boolean;
 }
 
 function formatTime(seconds?: number) {
@@ -41,7 +42,7 @@ function useTimeRemaining(endTimestamp: number) {
   return remaining;
 }
 
-export function ShowPage({ show, nowPlaying, nextTrack, upcoming }: ShowPageProps) {
+export function ShowPage({ show, nowPlaying, nextTrack, upcoming, calm = false }: ShowPageProps) {
   const timeLeft = useTimeRemaining(show.endTimestamp);
   const progressPct = nowPlaying.duration
     ? ((nowPlaying.elapsed || 0) / nowPlaying.duration) * 100
@@ -51,8 +52,10 @@ export function ShowPage({ show, nowPlaying, nextTrack, upcoming }: ShowPageProp
     <div className="absolute inset-0 z-10 flex items-center justify-center px-4 sm:px-8 lg:px-16 pb-20 sm:pb-24">
       {/* Soft accent glow */}
       <div
-        className="absolute w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] rounded-full opacity-[0.08] blur-[120px] pointer-events-none"
-        style={{ background: 'hsl(var(--secondary))' }}
+        className={`absolute w-[400px] h-[400px] sm:w-[550px] sm:h-[550px] rounded-full blur-[120px] pointer-events-none transition-opacity duration-[2000ms] ${
+          calm ? 'opacity-[0.03]' : 'opacity-[0.08]'
+        }`}
+        style={{ background: calm ? 'hsl(220, 20%, 25%)' : 'hsl(var(--secondary))' }}
       />
 
       <div className="relative flex flex-col items-center w-full max-w-[720px]">
@@ -127,7 +130,7 @@ export function ShowPage({ show, nowPlaying, nextTrack, upcoming }: ShowPageProp
           style={{ animationDelay: '0.1s' }}
         >
           {/* Top glow line */}
-          <div className="glow-line" />
+          <div className="glow-line" style={calm ? { opacity: 0.3 } : undefined} />
 
           <div
             className="p-5 sm:p-6"

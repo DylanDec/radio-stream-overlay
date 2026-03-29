@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNowPlaying } from '@/hooks/useNowPlaying';
 import { useSchedule } from '@/hooks/useSchedule';
 import { AnimatedBackground } from './AnimatedBackground';
@@ -13,6 +13,13 @@ export function RadioOverlay() {
   const { nowPlaying, nextTrack, showTheme } = useNowPlaying();
   const { schedule, currentShow } = useSchedule();
   const [mode, setMode] = useState<'nowplaying' | 'slideshow' | 'show'>('nowplaying');
+
+  const isCalm = useMemo(() => {
+    if (!currentShow) return false;
+    return CONFIG.CALM_SHOWS.some(
+      (name) => currentShow.name.toLowerCase() === name.toLowerCase()
+    );
+  }, [currentShow]);
 
   // When a show is active, switch to show mode
   useEffect(() => {
@@ -41,7 +48,15 @@ export function RadioOverlay() {
 
   return (
     <div className="overlay-container">
-      <AnimatedBackground themeId={showTheme.id} />
+      <AnimatedBackground themeId={showTheme.id} calm={isCalm} />
+
+      {/* Calm mode dim overlay */}
+      <div
+        className={`absolute inset-0 z-[1] pointer-events-none transition-opacity duration-[2000ms] ${
+          isCalm ? 'opacity-100' : 'opacity-0'
+        }`}
+        style={{ background: 'hsla(240, 15%, 4%, 0.35)' }}
+      />
 
       {mode === 'show' && currentShow ? (
         <ShowPage
@@ -49,6 +64,7 @@ export function RadioOverlay() {
           nowPlaying={nowPlaying}
           nextTrack={nextTrack}
           upcoming={upcoming}
+          calm={isCalm}
         />
       ) : (
         <>
@@ -61,7 +77,7 @@ export function RadioOverlay() {
         </>
       )}
 
-      <NowPlayingBar nowPlaying={nowPlaying} nextTrack={nextTrack} />
+      <NowPlayingBar nowPlaying={nowPlaying} nextTrack={nextTrack} calm={isCalm} />
       <AudioPlayer />
     </div>
   );
