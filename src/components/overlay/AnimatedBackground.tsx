@@ -182,7 +182,7 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
     };
-  }, [themeId]);
+  }, [themeId, calm]);
 
   return (
     <canvas

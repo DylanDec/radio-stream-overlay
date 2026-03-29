@@ -52,4 +52,10 @@ export const CONFIG = {
    * ook als er een show gepland staat in AzuraCast
    */
   SHOW_PAGE_ENABLED: true,
+
+  /**
+   * Shows die een rustige/donkere sfeer activeren (minder prikkels).
+   * Case-insensitive match op de show-naam uit AzuraCast.
+   */
+  CALM_SHOWS: ['Rustig aan'],
 };
