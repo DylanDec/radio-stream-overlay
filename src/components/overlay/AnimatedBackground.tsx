@@ -33,7 +33,7 @@ const THEME_PALETTES: Record<string, { bg: string; colors: string[]; glowColors:
   },
 };
 
-export function AnimatedBackground({ themeId }: AnimatedBackgroundProps) {
+export function AnimatedBackground({ themeId, calm = false }: AnimatedBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
