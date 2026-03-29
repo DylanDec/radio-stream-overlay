@@ -88,7 +88,7 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
       { amplitude: 25, frequency: 0.006, speed: 0.01, yFrac: 900 / 1080, color: palette.colors[0] },
     ];
 
-    const stars = Array.from({ length: 120 }, () => ({
+    const stars = Array.from({ length: starCount }, () => ({
       xFrac: Math.random(),
       yFrac: Math.random() * 0.55,
       size: 0.5 + Math.random() * 1.5,
