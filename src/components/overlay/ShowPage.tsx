@@ -130,7 +130,7 @@ export function ShowPage({ show, nowPlaying, nextTrack, upcoming, calm = false }
           style={{ animationDelay: '0.1s' }}
         >
           {/* Top glow line */}
-          <div className="glow-line" />
+          <div className="glow-line" style={calm ? { opacity: 0.3 } : undefined} />
 
           <div
             className="p-5 sm:p-6"
