@@ -28,7 +28,7 @@ function LiveClock() {
   );
 }
 
-export function NowPlayingBar({ nowPlaying, nextTrack }: NowPlayingBarProps) {
+export function NowPlayingBar({ nowPlaying, nextTrack, calm = false }: NowPlayingBarProps) {
   const progressPct = nowPlaying.duration
     ? ((nowPlaying.elapsed || 0) / nowPlaying.duration) * 100
     : 0;
