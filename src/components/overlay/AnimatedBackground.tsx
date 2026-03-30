@@ -67,24 +67,24 @@ export function AnimatedBackground({ themeId, calm = false, festive = false }: A
     const waveAmplitudeMult = festive ? 1.4 : calm ? 0.3 : 1;
 
     // Particles — positions as fractions
-    const particles = Array.from({ length: particleCount }, () => ({
+    const particles = Array.from({ length: particleCount }, (_, i) => ({
       xFrac: Math.random(),
       yFrac: Math.random(),
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.35,
-      radiusFrac: (60 + Math.random() * 250) / 1920,
-      color: palette.colors[Math.floor(Math.random() * palette.colors.length)],
-      alpha: 0.1 + Math.random() * 0.4,
-      alphaDir: (Math.random() - 0.5) * 0.004,
+      vx: (Math.random() - 0.5) * (festive ? 1.2 : 0.5),
+      vy: (Math.random() - 0.5) * (festive ? 0.9 : 0.35),
+      radiusFrac: (60 + Math.random() * (festive ? 300 : 250)) / 1920,
+      colorIndex: i % palette.colors.length,
+      alpha: 0.1 + Math.random() * (festive ? 0.6 : 0.4),
+      alphaDir: (Math.random() - 0.5) * (festive ? 0.008 : 0.004),
     }));
 
     const glows = Array.from({ length: glowCount }, (_, i) => ({
       xFrac: 0.15 + Math.random() * 0.7,
       yFrac: 0.18 + Math.random() * 0.64,
-      vx: (Math.random() - 0.5) * 0.15,
-      vy: (Math.random() - 0.5) * 0.12,
-      radiusFrac: (350 + Math.random() * 250) / 1920,
-      color: palette.glowColors[i % palette.glowColors.length],
+      vx: (Math.random() - 0.5) * (festive ? 0.4 : 0.15),
+      vy: (Math.random() - 0.5) * (festive ? 0.3 : 0.12),
+      radiusFrac: ((festive ? 300 : 350) + Math.random() * 250) / 1920,
+      colorIndex: i % palette.glowColors.length,
     }));
 
     const waves = [
