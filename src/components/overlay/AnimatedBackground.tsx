@@ -60,11 +60,11 @@ export function AnimatedBackground({ themeId, calm = false, festive = false }: A
     const w = () => canvas.width;
     const h = () => canvas.height;
 
-    const palette = calm ? THEME_PALETTES.calm : (THEME_PALETTES[themeId] || THEME_PALETTES.night);
-    const particleCount = calm ? 20 : 80;
-    const glowCount = calm ? 2 : 4;
-    const starCount = calm ? 40 : 120;
-    const waveAmplitudeMult = calm ? 0.3 : 1;
+    const palette = festive ? THEME_PALETTES.festive : calm ? THEME_PALETTES.calm : (THEME_PALETTES[themeId] || THEME_PALETTES.night);
+    const particleCount = festive ? 120 : calm ? 20 : 80;
+    const glowCount = festive ? 6 : calm ? 2 : 4;
+    const starCount = festive ? 180 : calm ? 40 : 120;
+    const waveAmplitudeMult = festive ? 1.4 : calm ? 0.3 : 1;
 
     // Particles — positions as fractions
     const particles = Array.from({ length: particleCount }, () => ({
