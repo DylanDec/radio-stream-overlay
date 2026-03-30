@@ -164,7 +164,12 @@ export function AnimatedBackground({ themeId, calm = false, festive = false }: A
         const brightness = 0.3 + 0.7 * Math.abs(Math.sin(time * s.twinkleSpeed + s.phase));
         ctx.beginPath();
         ctx.arc(s.xFrac * cw, s.yFrac * ch, s.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${brightness * 0.6})`;
+        if (festive) {
+          const hue = (s.hue + time * 30) % 360;
+          ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${brightness * 0.8})`;
+        } else {
+          ctx.fillStyle = `rgba(255, 255, 255, ${brightness * 0.6})`;
+        }
         ctx.fill();
       }
 
