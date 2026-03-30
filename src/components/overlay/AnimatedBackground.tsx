@@ -147,8 +147,13 @@ export function AnimatedBackground({ themeId, calm = false, festive = false }: A
         if (p.yFrac < -0.1) p.yFrac = 1.1;
         if (p.yFrac > 1.1) p.yFrac = -0.1;
 
+        // Festive: cycle particle colors
+        const pColorIdx = festive
+          ? (p.colorIndex + Math.floor(time * 0.5 + p.colorIndex * 0.7)) % palette.colors.length
+          : p.colorIndex;
+        const pColor = palette.colors[pColorIdx];
         const gradient = ctx.createRadialGradient(px, py, 0, px, py, pr);
-        gradient.addColorStop(0, p.color.replace(/[\d.]+\)$/, `${p.alpha})`));
+        gradient.addColorStop(0, pColor.replace(/[\d.]+\)$/, `${p.alpha})`));
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
         ctx.fillRect(px - pr, py - pr, pr * 2, pr * 2);
