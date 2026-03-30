@@ -122,8 +122,13 @@ export function AnimatedBackground({ themeId, calm = false, festive = false }: A
         if (g.xFrac < 0.05 || g.xFrac > 0.95) g.vx *= -1;
         if (g.yFrac < 0.05 || g.yFrac > 0.95) g.vy *= -1;
 
+        // Festive: cycle through colors over time
+        const glowColorIdx = festive
+          ? (g.colorIndex + Math.floor(time * 0.3)) % palette.glowColors.length
+          : g.colorIndex;
+        const glowColor = palette.glowColors[glowColorIdx];
         const grad = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
-        grad.addColorStop(0, g.color);
+        grad.addColorStop(0, glowColor);
         grad.addColorStop(1, 'transparent');
         ctx.fillStyle = grad;
         ctx.fillRect(gx - gr, gy - gr, gr * 2, gr * 2);
