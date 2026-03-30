@@ -94,12 +94,13 @@ export function AnimatedBackground({ themeId, calm = false, festive = false }: A
       { amplitude: 25, frequency: 0.006, speed: 0.01, yFrac: 900 / 1080, color: palette.colors[0] },
     ];
 
-    const stars = Array.from({ length: starCount }, () => ({
+    const stars = Array.from({ length: starCount }, (_, i) => ({
       xFrac: Math.random(),
-      yFrac: Math.random() * 0.55,
-      size: 0.5 + Math.random() * 1.5,
-      twinkleSpeed: 0.5 + Math.random() * 2,
+      yFrac: festive ? Math.random() : Math.random() * 0.55,
+      size: festive ? (0.8 + Math.random() * 2.5) : (0.5 + Math.random() * 1.5),
+      twinkleSpeed: festive ? (1.5 + Math.random() * 4) : (0.5 + Math.random() * 2),
       phase: Math.random() * Math.PI * 2,
+      hue: festive ? (i * 37) % 360 : 0,
     }));
 
     let time = 0;
