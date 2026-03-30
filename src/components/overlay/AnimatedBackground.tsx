@@ -32,6 +32,11 @@ const THEME_PALETTES: Record<string, { bg: string; colors: string[]; glowColors:
     colors: ['hsla(220, 30%, 25%, 0.08)', 'hsla(240, 20%, 20%, 0.06)', 'hsla(200, 25%, 22%, 0.05)'],
     glowColors: ['hsla(220, 25%, 30%, 0.1)', 'hsla(240, 20%, 25%, 0.08)'],
   },
+  festive: {
+    bg: '#0d0518',
+    colors: ['hsla(330, 100%, 60%, 0.35)', 'hsla(50, 100%, 55%, 0.3)', 'hsla(170, 100%, 50%, 0.28)', 'hsla(270, 95%, 60%, 0.3)', 'hsla(20, 100%, 55%, 0.28)'],
+    glowColors: ['hsla(330, 100%, 55%, 0.45)', 'hsla(50, 100%, 55%, 0.4)', 'hsla(170, 100%, 50%, 0.35)', 'hsla(270, 100%, 60%, 0.4)'],
+  },
 };
 
 export function AnimatedBackground({ themeId, calm = false }: AnimatedBackgroundProps) {
