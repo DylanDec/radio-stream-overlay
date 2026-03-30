@@ -55,7 +55,7 @@ export function RadioOverlay() {
 
   return (
     <div className="overlay-container">
-      <AnimatedBackground themeId={showTheme.id} calm={isCalm} />
+      <AnimatedBackground themeId={showTheme.id} calm={isCalm} festive={isFestive} />
 
       {/* Calm mode dim overlay */}
       <div
