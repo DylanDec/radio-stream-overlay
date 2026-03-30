@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 interface AnimatedBackgroundProps {
   themeId: 'morning' | 'afternoon' | 'evening' | 'night';
   calm?: boolean;
+  festive?: boolean;
 }
 
 const THEME_PALETTES: Record<string, { bg: string; colors: string[]; glowColors: string[] }> = {
@@ -31,9 +32,14 @@ const THEME_PALETTES: Record<string, { bg: string; colors: string[]; glowColors:
     colors: ['hsla(220, 30%, 25%, 0.08)', 'hsla(240, 20%, 20%, 0.06)', 'hsla(200, 25%, 22%, 0.05)'],
     glowColors: ['hsla(220, 25%, 30%, 0.1)', 'hsla(240, 20%, 25%, 0.08)'],
   },
+  festive: {
+    bg: '#0d0518',
+    colors: ['hsla(330, 100%, 60%, 0.35)', 'hsla(50, 100%, 55%, 0.3)', 'hsla(170, 100%, 50%, 0.28)', 'hsla(270, 95%, 60%, 0.3)', 'hsla(20, 100%, 55%, 0.28)'],
+    glowColors: ['hsla(330, 100%, 55%, 0.45)', 'hsla(50, 100%, 55%, 0.4)', 'hsla(170, 100%, 50%, 0.35)', 'hsla(270, 100%, 60%, 0.4)'],
+  },
 };
 
-export function AnimatedBackground({ themeId, calm = false }: AnimatedBackgroundProps) {
+export function AnimatedBackground({ themeId, calm = false, festive = false }: AnimatedBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -54,31 +60,31 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
     const w = () => canvas.width;
     const h = () => canvas.height;
 
-    const palette = calm ? THEME_PALETTES.calm : (THEME_PALETTES[themeId] || THEME_PALETTES.night);
-    const particleCount = calm ? 20 : 80;
-    const glowCount = calm ? 2 : 4;
-    const starCount = calm ? 40 : 120;
-    const waveAmplitudeMult = calm ? 0.3 : 1;
+    const palette = festive ? THEME_PALETTES.festive : calm ? THEME_PALETTES.calm : (THEME_PALETTES[themeId] || THEME_PALETTES.night);
+    const particleCount = festive ? 120 : calm ? 20 : 80;
+    const glowCount = festive ? 6 : calm ? 2 : 4;
+    const starCount = festive ? 180 : calm ? 40 : 120;
+    const waveAmplitudeMult = festive ? 1.4 : calm ? 0.3 : 1;
 
     // Particles — positions as fractions
-    const particles = Array.from({ length: particleCount }, () => ({
+    const particles = Array.from({ length: particleCount }, (_, i) => ({
       xFrac: Math.random(),
       yFrac: Math.random(),
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.35,
-      radiusFrac: (60 + Math.random() * 250) / 1920,
-      color: palette.colors[Math.floor(Math.random() * palette.colors.length)],
-      alpha: 0.1 + Math.random() * 0.4,
-      alphaDir: (Math.random() - 0.5) * 0.004,
+      vx: (Math.random() - 0.5) * (festive ? 1.2 : 0.5),
+      vy: (Math.random() - 0.5) * (festive ? 0.9 : 0.35),
+      radiusFrac: (60 + Math.random() * (festive ? 300 : 250)) / 1920,
+      colorIndex: i % palette.colors.length,
+      alpha: 0.1 + Math.random() * (festive ? 0.6 : 0.4),
+      alphaDir: (Math.random() - 0.5) * (festive ? 0.008 : 0.004),
     }));
 
     const glows = Array.from({ length: glowCount }, (_, i) => ({
       xFrac: 0.15 + Math.random() * 0.7,
       yFrac: 0.18 + Math.random() * 0.64,
-      vx: (Math.random() - 0.5) * 0.15,
-      vy: (Math.random() - 0.5) * 0.12,
-      radiusFrac: (350 + Math.random() * 250) / 1920,
-      color: palette.glowColors[i % palette.glowColors.length],
+      vx: (Math.random() - 0.5) * (festive ? 0.4 : 0.15),
+      vy: (Math.random() - 0.5) * (festive ? 0.3 : 0.12),
+      radiusFrac: ((festive ? 300 : 350) + Math.random() * 250) / 1920,
+      colorIndex: i % palette.glowColors.length,
     }));
 
     const waves = [
@@ -88,12 +94,13 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
       { amplitude: 25, frequency: 0.006, speed: 0.01, yFrac: 900 / 1080, color: palette.colors[0] },
     ];
 
-    const stars = Array.from({ length: starCount }, () => ({
+    const stars = Array.from({ length: starCount }, (_, i) => ({
       xFrac: Math.random(),
-      yFrac: Math.random() * 0.55,
-      size: 0.5 + Math.random() * 1.5,
-      twinkleSpeed: 0.5 + Math.random() * 2,
+      yFrac: festive ? Math.random() : Math.random() * 0.55,
+      size: festive ? (0.8 + Math.random() * 2.5) : (0.5 + Math.random() * 1.5),
+      twinkleSpeed: festive ? (1.5 + Math.random() * 4) : (0.5 + Math.random() * 2),
       phase: Math.random() * Math.PI * 2,
+      hue: festive ? (i * 37) % 360 : 0,
     }));
 
     let time = 0;
@@ -116,8 +123,13 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
         if (g.xFrac < 0.05 || g.xFrac > 0.95) g.vx *= -1;
         if (g.yFrac < 0.05 || g.yFrac > 0.95) g.vy *= -1;
 
+        // Festive: cycle through colors over time
+        const glowColorIdx = festive
+          ? (g.colorIndex + Math.floor(time * 0.3)) % palette.glowColors.length
+          : g.colorIndex;
+        const glowColor = palette.glowColors[glowColorIdx];
         const grad = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
-        grad.addColorStop(0, g.color);
+        grad.addColorStop(0, glowColor);
         grad.addColorStop(1, 'transparent');
         ctx.fillStyle = grad;
         ctx.fillRect(gx - gr, gy - gr, gr * 2, gr * 2);
@@ -136,8 +148,13 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
         if (p.yFrac < -0.1) p.yFrac = 1.1;
         if (p.yFrac > 1.1) p.yFrac = -0.1;
 
+        // Festive: cycle particle colors
+        const pColorIdx = festive
+          ? (p.colorIndex + Math.floor(time * 0.5 + p.colorIndex * 0.7)) % palette.colors.length
+          : p.colorIndex;
+        const pColor = palette.colors[pColorIdx];
         const gradient = ctx.createRadialGradient(px, py, 0, px, py, pr);
-        gradient.addColorStop(0, p.color.replace(/[\d.]+\)$/, `${p.alpha})`));
+        gradient.addColorStop(0, pColor.replace(/[\d.]+\)$/, `${p.alpha})`));
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
         ctx.fillRect(px - pr, py - pr, pr * 2, pr * 2);
@@ -147,7 +164,12 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
         const brightness = 0.3 + 0.7 * Math.abs(Math.sin(time * s.twinkleSpeed + s.phase));
         ctx.beginPath();
         ctx.arc(s.xFrac * cw, s.yFrac * ch, s.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 255, 255, ${brightness * 0.6})`;
+        if (festive) {
+          const hue = (s.hue + time * 30) % 360;
+          ctx.fillStyle = `hsla(${hue}, 100%, 70%, ${brightness * 0.8})`;
+        } else {
+          ctx.fillStyle = `rgba(255, 255, 255, ${brightness * 0.6})`;
+        }
         ctx.fill();
       }
 
@@ -182,7 +204,7 @@ export function AnimatedBackground({ themeId, calm = false }: AnimatedBackground
       cancelAnimationFrame(animId);
       window.removeEventListener('resize', resize);
     };
-  }, [themeId, calm]);
+  }, [themeId, calm, festive]);
 
   return (
     <canvas

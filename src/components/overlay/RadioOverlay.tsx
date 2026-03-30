@@ -21,6 +21,13 @@ export function RadioOverlay() {
     );
   }, [currentShow]);
 
+  const isFestive = useMemo(() => {
+    if (!currentShow) return false;
+    return CONFIG.FESTIVE_SHOWS.some(
+      (name) => currentShow.name.toLowerCase() === name.toLowerCase()
+    );
+  }, [currentShow]);
+
   // When a show is active, switch to show mode
   useEffect(() => {
     if (CONFIG.SHOW_PAGE_ENABLED && currentShow) {
@@ -48,7 +55,7 @@ export function RadioOverlay() {
 
   return (
     <div className="overlay-container">
-      <AnimatedBackground themeId={showTheme.id} calm={isCalm} />
+      <AnimatedBackground themeId={showTheme.id} calm={isCalm} festive={isFestive} />
 
       {/* Calm mode dim overlay */}
       <div

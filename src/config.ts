@@ -58,4 +58,10 @@ export const CONFIG = {
    * Case-insensitive match op de show-naam uit AzuraCast.
    */
   CALM_SHOWS: ['Rustig aan'],
+
+  /**
+   * Shows die een feestelijke/vibrante sfeer activeren.
+   * Case-insensitive match op de show-naam uit AzuraCast.
+   */
+  FESTIVE_SHOWS: ['Piraten'],
 };
