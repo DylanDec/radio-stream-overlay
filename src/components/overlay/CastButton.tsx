@@ -1,4 +1,4 @@
-import { Cast, CastOff, Loader2 } from 'lucide-react';
+import { Cast, Loader2 } from 'lucide-react';
 import { useCast } from '@/hooks/useCast';
 import type { NowPlayingData } from '@/hooks/useNowPlaying';
 
@@ -26,7 +26,7 @@ export function CastButton({ nowPlaying }: CastButtonProps) {
     }
   };
 
-  const Icon = isConnecting ? Loader2 : isConnected ? CastOff : Cast;
+  const Icon = isConnecting ? Loader2 : Cast;
 
   return (
     <button
