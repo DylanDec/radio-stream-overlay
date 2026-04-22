@@ -1,6 +1,7 @@
 import { NowPlayingData, NextTrack } from '@/hooks/useNowPlaying';
 import { Radio, SkipForward } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { CastButton } from './CastButton';
 
 interface NowPlayingBarProps {
   nowPlaying: NowPlayingData;
@@ -127,6 +128,12 @@ export function NowPlayingBar({ nowPlaying, nextTrack, calm = false }: NowPlayin
 
         {/* Divider */}
         <div className="hidden lg:block w-px h-6 shrink-0" style={{ background: 'hsla(var(--border), 0.3)' }} />
+
+        {/* Cast button */}
+        <CastButton nowPlaying={nowPlaying} />
+
+        {/* Divider */}
+        <div className="hidden sm:block w-px h-6 shrink-0" style={{ background: 'hsla(var(--border), 0.3)' }} />
 
         {/* Clock */}
         <LiveClock />
